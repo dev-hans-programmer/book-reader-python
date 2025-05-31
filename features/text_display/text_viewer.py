@@ -15,6 +15,11 @@ class TextViewer:
         self.theme_manager = theme_manager
         self.current_content = None
         
+        # Page management
+        self.pages = []
+        self.current_page = 0
+        self.lines_per_page = 25  # Adjustable based on widget height
+        
         # Configure text widget
         self.setup_text_widget()
         
@@ -83,31 +88,99 @@ class TextViewer:
         """Display content in the text widget"""
         self.current_content = content_data
         
+        # Process content into pages
+        self.create_pages(content_data)
+        
+        # Display first page
+        self.display_page(0)
+    
+    def create_pages(self, content_data):
+        """Split content into pages for better navigation"""
+        self.pages = []
+        
+        # Prepare full text
+        full_text = ""
+        if content_data.get('title'):
+            full_text += content_data['title'] + "\n\n"
+        if content_data.get('author'):
+            full_text += f"by {content_data['author']}\n\n" + "="*50 + "\n\n"
+        
+        content = content_data.get('content', '')
+        full_text += content
+        
+        # Split into paragraphs and estimate pages based on line count
+        paragraphs = re.split(r'\n\s*\n', full_text)
+        current_page_text = ""
+        estimated_lines = 0
+        
+        for paragraph in paragraphs:
+            if not paragraph.strip():
+                continue
+                
+            # Estimate lines for this paragraph (rough calculation)
+            paragraph_lines = max(1, len(paragraph) // 80) + 2  # +2 for spacing
+            
+            if estimated_lines + paragraph_lines > self.lines_per_page and current_page_text:
+                # Start new page
+                self.pages.append(current_page_text.strip())
+                current_page_text = paragraph + "\n\n"
+                estimated_lines = paragraph_lines
+            else:
+                current_page_text += paragraph + "\n\n"
+                estimated_lines += paragraph_lines
+        
+        # Add remaining content as last page
+        if current_page_text.strip():
+            self.pages.append(current_page_text.strip())
+        
+        # Ensure we have at least one page
+        if not self.pages:
+            self.pages = [full_text or "No content available"]
+    
+    def display_page(self, page_number):
+        """Display a specific page"""
+        if not self.pages or page_number < 0 or page_number >= len(self.pages):
+            return False
+        
+        self.current_page = page_number
+        
         # Enable text widget for editing
         self.text_widget.configure(state=tk.NORMAL)
         
         # Clear existing content
         self.text_widget.delete("1.0", tk.END)
         
-        # Insert title if available
-        if content_data.get('title'):
-            self.text_widget.insert(tk.END, content_data['title'], "heading center")
-            self.text_widget.insert(tk.END, "\n\n")
-        
-        # Insert author if available
-        if content_data.get('author'):
-            self.text_widget.insert(tk.END, f"by {content_data['author']}", "center")
-            self.text_widget.insert(tk.END, "\n\n" + "="*50 + "\n\n")
-        
-        # Insert content
-        content = content_data.get('content', '')
-        self.format_and_insert_text(content)
+        # Insert page content
+        page_content = self.pages[page_number]
+        self.format_and_insert_text(page_content)
         
         # Disable text widget to prevent editing
         self.text_widget.configure(state=tk.DISABLED)
         
         # Scroll to top
         self.text_widget.see("1.0")
+        
+        return True
+    
+    def next_page(self):
+        """Go to next page"""
+        if self.current_page < len(self.pages) - 1:
+            return self.display_page(self.current_page + 1)
+        return False
+    
+    def previous_page(self):
+        """Go to previous page"""
+        if self.current_page > 0:
+            return self.display_page(self.current_page - 1)
+        return False
+    
+    def get_page_info(self):
+        """Get current page information"""
+        return {
+            'current_page': self.current_page + 1,
+            'total_pages': len(self.pages),
+            'progress': ((self.current_page + 1) / len(self.pages)) * 100 if self.pages else 0
+        }
     
     def format_and_insert_text(self, text):
         """Format and insert text with proper styling"""

@@ -45,13 +45,14 @@ class ReadingArea(ctk.CTkFrame):
         nav_frame = ctk.CTkFrame(self.controls_frame, fg_color="transparent")
         nav_frame.grid(row=0, column=0, sticky="w")
         
-        # Previous/Next buttons (for chapters)
+        # Previous/Next buttons (for pages)
         self.prev_btn = ctk.CTkButton(
             nav_frame,
             text="◀ Prev",
             width=70,
             height=30,
-            state="disabled"
+            state="disabled",
+            command=lambda: self.previous_page()
         )
         self.prev_btn.grid(row=0, column=0, padx=(0, 5))
         self.theme_manager.register_widget(self.prev_btn, "button")
@@ -61,7 +62,8 @@ class ReadingArea(ctk.CTkFrame):
             text="Next ▶",
             width=70,
             height=30,
-            state="disabled"
+            state="disabled",
+            command=lambda: self.next_page()
         )
         self.next_btn.grid(row=0, column=1)
         self.theme_manager.register_widget(self.next_btn, "button")
@@ -77,7 +79,7 @@ class ReadingArea(ctk.CTkFrame):
         
         self.progress_label = ctk.CTkLabel(
             self.progress_frame,
-            text="0%",
+            text="Page 0 of 0",
             font=ctk.CTkFont(size=10)
         )
         self.progress_label.grid(row=1, column=0)
@@ -185,15 +187,59 @@ Click "Open Book" in the toolbar to begin reading!
     
     def update_navigation(self, content):
         """Update navigation controls based on content"""
-        # Enable/disable navigation buttons based on content structure
-        has_chapters = content and len(content.get('chapters', [])) > 1
-        
-        if has_chapters:
+        # Enable navigation buttons when content is loaded
+        if content:
             self.prev_btn.configure(state="normal")
             self.next_btn.configure(state="normal")
+            # Update page info
+            self.update_page_info()
         else:
             self.prev_btn.configure(state="disabled")
             self.next_btn.configure(state="disabled")
+    
+    def previous_page(self):
+        """Go to previous page"""
+        if hasattr(self, 'text_viewer') and self.text_viewer:
+            if self.text_viewer.previous_page():
+                self.update_page_info()
+                self.update_nav_buttons()
+    
+    def next_page(self):
+        """Go to next page"""
+        if hasattr(self, 'text_viewer') and self.text_viewer:
+            if self.text_viewer.next_page():
+                self.update_page_info()
+                self.update_nav_buttons()
+    
+    def update_page_info(self):
+        """Update page information display"""
+        if hasattr(self, 'text_viewer') and self.text_viewer:
+            page_info = self.text_viewer.get_page_info()
+            self.progress_label.configure(
+                text=f"Page {page_info['current_page']} of {page_info['total_pages']}"
+            )
+            self.progress_bar.set(page_info['progress'] / 100)
+    
+    def update_nav_buttons(self):
+        """Update navigation button states"""
+        if hasattr(self, 'text_viewer') and self.text_viewer:
+            page_info = self.text_viewer.get_page_info()
+            
+            # Update previous button
+            if page_info['current_page'] <= 1:
+                self.prev_btn.configure(state="disabled")
+            else:
+                self.prev_btn.configure(state="normal")
+            
+            # Update next button
+            if page_info['current_page'] >= page_info['total_pages']:
+                self.next_btn.configure(state="disabled")
+            else:
+                self.next_btn.configure(state="normal")
+    
+    def set_text_viewer(self, text_viewer):
+        """Set the text viewer reference"""
+        self.text_viewer = text_viewer
     
     def on_text_click(self, event):
         """Handle text click events"""
@@ -263,6 +309,7 @@ Click "Open Book" in the toolbar to begin reading!
             # No selection, use current cursor position
             position = self.text_widget.index(tk.INSERT)
             selected_text = ""
+            start_index = position
         
         # Simple dialog for note text
         dialog = ctk.CTkInputDialog(

@@ -101,6 +101,9 @@ class BookReaderApp:
             self.reading_area.get_text_widget(),
             self.theme_manager
         )
+        
+        # Connect text viewer to reading area for page navigation
+        self.reading_area.set_text_viewer(self.text_viewer)
     
     def bind_events(self):
         """Bind application events"""
