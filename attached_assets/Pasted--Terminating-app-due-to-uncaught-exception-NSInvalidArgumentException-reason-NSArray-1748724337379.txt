@@ -1,0 +1,48 @@
+*** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason: '*** -[__NSArrayM insertObject:atIndex:]: object cannot be nil'
+*** First throw call stack:
+(
+        0   CoreFoundation                      0x0000000191b6eca0 __exceptionPreprocess + 176
+        1   libobjc.A.dylib                     0x0000000191632b90 objc_exception_throw + 88
+        2   CoreFoundation                      0x0000000191a9f57c -[__NSArrayM insertObject:atIndex:] + 1276
+        3   Tk                                  0x0000000101688ec4 Tk_MacOSXTkOwnsCursor + 2296
+        4   Tk                                  0x0000000101689e6c Tk_MacOSXTkOwnsCursor + 6304
+        5   Tcl                                 0x00000001012d3920 Tcl_GetVersion + 4408
+        6   Tcl                                 0x00000001012ce44c TclNRRunCallbacks + 180
+        7   Tcl                                 0x00000001012ce13c Tcl_EvalObjv + 88
+        8   _tkinter.cpython-313-darwin.so      0x0000000100b48c6c Tkapp_Call + 364
+        9   Python                              0x00000001019af63c cfunction_call + 116
+        10  Python                              0x0000000101ad6f4c _PyEval_EvalFrameDefault + 59884
+        11  Python                              0x0000000101933c68 method_vectorcall + 192
+        12  Python                              0x0000000101ad6e3c _PyEval_EvalFrameDefault + 59612
+        13  Python                              0x0000000101933c68 method_vectorcall + 192
+        14  _tkinter.cpython-313-darwin.so      0x0000000100b4abd0 PythonCmd + 228
+        15  Tcl                                 0x00000001012d3920 Tcl_GetVersion + 4408
+        16  Tcl                                 0x00000001012ce44c TclNRRunCallbacks + 180
+        17  Tcl                                 0x00000001012ce13c Tcl_EvalObjv + 88
+        18  Tcl                                 0x00000001012cfb8c Tcl_EvalEx + 3012
+        19  Tcl                                 0x00000001012cf004 Tcl_EvalEx + 60
+        20  Tk                                  0x0000000101543dd8 Tk_BindEvent + 4620
+        21  Tk                                  0x0000000101550df0 TkBindEventProc + 692
+        22  Tk                                  0x000000010155ed60 Tk_HandleEvent + 928
+        23  Tk                                  0x000000010155fd2c Tk_QueueWindowEvent + 992
+        24  Tcl                                 0x0000000101441470 Tcl_ServiceEvent + 240
+        25  Tcl                                 0x0000000101441a74 Tcl_DoOneEvent + 636
+        26  _tkinter.cpython-313-darwin.so      0x0000000100b4a094 _tkinter_tkapp_mainloop_impl + 252
+        27  Python                              0x00000001019420e8 method_vectorcall_FASTCALL + 108
+        28  Python                              0x0000000101ad2904 _PyEval_EvalFrameDefault + 41892
+        29  Python                              0x0000000101933d34 method_vectorcall + 396
+        30  Python                              0x0000000101ad6e3c _PyEval_EvalFrameDefault + 59612
+        31  Python                              0x0000000101ac6058 PyEval_EvalCode + 132
+        32  Python                              0x0000000101b7ef88 run_eval_code_obj + 144
+        33  Python                              0x0000000101b7e9a8 run_mod + 168
+        34  Python                              0x0000000101b7e7d0 pyrun_file + 144
+        35  Python                              0x0000000101b7e0cc _PyRun_SimpleFileObject + 256
+        36  Python                              0x0000000101b7d9d0 _PyRun_AnyFileObject + 80
+        37  Python                              0x0000000101bab4a8 pymain_run_file_obj + 164
+        38  Python                              0x0000000101baabe4 pymain_run_file + 72
+        39  Python                              0x0000000101ba9f38 Py_RunMain + 888
+        40  Python                              0x0000000101bab7a0 pymain_main + 508
+        41  Python                              0x0000000101bab908 Py_BytesMain + 40
+        42  dyld                                0x0000000191672b98 start + 6076
+)
+libc++abi: terminating due to uncaught exception of type NSException

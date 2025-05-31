@@ -114,21 +114,26 @@ class BookReaderApp:
     
     def open_file(self):
         """Open a book file"""
-        file_types = [
-            ("All Supported", "*.epub;*.pdf;*.txt"),
-            ("EPUB files", "*.epub"),
-            ("PDF files", "*.pdf"),
-            ("Text files", "*.txt"),
-            ("All files", "*.*")
-        ]
-        
-        filename = filedialog.askopenfilename(
-            title="Open Book",
-            filetypes=file_types
-        )
-        
-        if filename:
-            self.load_book(filename)
+        try:
+            # Simplified file types for better compatibility
+            file_types = [
+                ("EPUB files", "*.epub"),
+                ("PDF files", "*.pdf"), 
+                ("Text files", "*.txt"),
+                ("All files", "*.*")
+            ]
+            
+            filename = filedialog.askopenfilename(
+                title="Open Book",
+                filetypes=file_types,
+                initialdir=os.path.expanduser("~")
+            )
+            
+            if filename:
+                self.load_book(filename)
+        except Exception as e:
+            print(f"Error opening file dialog: {e}")
+            messagebox.showerror("Error", f"Could not open file dialog: {str(e)}")
     
     def load_book(self, filepath):
         """Load a book from file"""
