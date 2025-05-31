@@ -39,7 +39,10 @@ class TextViewer:
             relief=tk.FLAT,
             borderwidth=0,
             state=tk.DISABLED,
-            cursor="arrow"
+            cursor="arrow",
+            spacing1=2,
+            spacing2=1,
+            spacing3=2
         )
         
         # Remove default bindings that might interfere
@@ -51,9 +54,9 @@ class TextViewer:
         self.update_fonts()
         
         # Configure tags
-        self.text_widget.tag_configure("normal", font=self.normal_font)
-        self.text_widget.tag_configure("heading", font=self.heading_font, spacing1=10, spacing3=5)
-        self.text_widget.tag_configure("paragraph", spacing1=5, spacing3=5)
+        self.text_widget.tag_configure("normal", font=self.normal_font, spacing1=0, spacing2=2, spacing3=6)
+        self.text_widget.tag_configure("heading", font=self.heading_font, spacing1=15, spacing3=10, justify=tk.CENTER)
+        self.text_widget.tag_configure("paragraph", spacing1=0, spacing2=2, spacing3=6)
         self.text_widget.tag_configure("highlight", background=self.theme_manager.get_color('highlight'))
         self.text_widget.tag_configure("selection", background=self.theme_manager.get_color('selection'))
         self.text_widget.tag_configure("center", justify=tk.CENTER)
@@ -108,13 +111,22 @@ class TextViewer:
     
     def format_and_insert_text(self, text):
         """Format and insert text with proper styling"""
-        # Split text into paragraphs
-        paragraphs = text.split('\n\n')
+        # Clean up the text first - remove excessive whitespace but preserve paragraph breaks
+        text = re.sub(r'\r\n', '\n', text)  # Normalize line endings
+        text = re.sub(r'\r', '\n', text)    # Handle old Mac line endings
         
-        for paragraph in paragraphs:
+        # Split text into paragraphs (double newlines or more)
+        paragraphs = re.split(r'\n\s*\n', text)
+        
+        for i, paragraph in enumerate(paragraphs):
             paragraph = paragraph.strip()
             if not paragraph:
                 continue
+            
+            # Replace single newlines with spaces within paragraphs
+            paragraph = re.sub(r'\n+', ' ', paragraph)
+            # Clean up multiple spaces
+            paragraph = re.sub(r'\s+', ' ', paragraph)
             
             # Check if it looks like a heading
             if self.is_heading(paragraph):
@@ -123,7 +135,9 @@ class TextViewer:
             else:
                 # Insert as normal paragraph
                 self.text_widget.insert(tk.END, paragraph, "normal paragraph")
-                self.text_widget.insert(tk.END, "\n\n")
+                # Add paragraph spacing except for the last paragraph
+                if i < len(paragraphs) - 1:
+                    self.text_widget.insert(tk.END, "\n\n")
     
     def is_heading(self, text):
         """Determine if text looks like a heading"""
