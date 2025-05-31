@@ -20,8 +20,8 @@ class TextViewer:
         
         # Font settings
         self.font_family = "Georgia"
-        self.font_size = 14
-        self.line_spacing = 1.3
+        self.font_size = 16
+        self.line_spacing = 1.6
         
         # Create tags for formatting
         self.create_text_tags()
@@ -34,15 +34,15 @@ class TextViewer:
         # Configure text widget properties
         self.text_widget.configure(
             wrap=tk.WORD,
-            padx=40,
-            pady=20,
+            padx=60,
+            pady=30,
             relief=tk.FLAT,
             borderwidth=0,
             state=tk.DISABLED,
             cursor="arrow",
-            spacing1=2,
-            spacing2=1,
-            spacing3=2
+            spacing1=4,
+            spacing2=8,
+            spacing3=12
         )
         
         # Remove default bindings that might interfere
@@ -54,9 +54,9 @@ class TextViewer:
         self.update_fonts()
         
         # Configure tags
-        self.text_widget.tag_configure("normal", font=self.normal_font, spacing1=0, spacing2=2, spacing3=6)
-        self.text_widget.tag_configure("heading", font=self.heading_font, spacing1=15, spacing3=10, justify=tk.CENTER)
-        self.text_widget.tag_configure("paragraph", spacing1=0, spacing2=2, spacing3=6)
+        self.text_widget.tag_configure("normal", font=self.normal_font, spacing1=3, spacing2=6, spacing3=10)
+        self.text_widget.tag_configure("heading", font=self.heading_font, spacing1=20, spacing3=15, justify=tk.CENTER)
+        self.text_widget.tag_configure("paragraph", spacing1=3, spacing2=6, spacing3=10)
         self.text_widget.tag_configure("highlight", background=self.theme_manager.get_color('highlight'))
         self.text_widget.tag_configure("selection", background=self.theme_manager.get_color('selection'))
         self.text_widget.tag_configure("center", justify=tk.CENTER)

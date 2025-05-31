@@ -120,14 +120,17 @@ class ReadingArea(ctk.CTkFrame):
         self.text_widget = tk.Text(
             self.text_frame,
             wrap=tk.WORD,
-            padx=40,
-            pady=30,
-            font=("Georgia", 14),
+            padx=60,
+            pady=40,
+            font=("Georgia", 16),
             relief=tk.FLAT,
             borderwidth=0,
             state=tk.DISABLED,
             cursor="arrow",
-            selectbackground="#B3D4FC"
+            selectbackground="#B3D4FC",
+            spacing1=4,
+            spacing2=8,
+            spacing3=12
         )
         
         # Scrollbar
